@@ -2,23 +2,59 @@
 import { ref } from 'vue'
 const buttonStrings = ['7', '8', '9', '+', '4', '5', '6', '-', '1', '2', '3', '*', 'C', '0', '=', '/']
 
-const inputA = ref('2')
-const inputB = ref('4')  
-const operator = ref('+')
-
-const executeA = ref(false)
-const executeB = ref(false)
+const inputA = ref('')
+const inputB = ref('')  
+const operator = ref('')
 
 const output = ref('')
+const state = ref('')
+const display = ref('')
+
+const buttonClicked = (buttonString: string) => {
+
+  // if number is pressed
+  if (!isNaN(Number(buttonString))) {
+    switch (state.value) {
+      case 'inputA':
+        inputA.value += buttonString; break;
+      case 'inputB':
+        inputB.value += buttonString; break;
+      default:
+        inputA.value += buttonString;
+        state.value = 'inputA';
+    }
+  }
+
+  // if operator is pressed
+  else if (['+', '-', '*', '/'].includes(buttonString)) {
+    operator.value = buttonString;
+    state.value = 'inputB';
+  } 
+
+  // if clear is pressed
+  else if (buttonString === 'C') {
+    inputA.value = ''
+    inputB.value = ''
+    operator.value = ''
+    state.value = 'inputA'
+  }
+}
+
+const displayText = () => {
+  if (inputA.value === '' && inputB.value === '') {
+    return '0'
+  }
+  return inputA.value + ' ' + operator.value + ' ' + inputB.value
+}
+
+
 
 </script>
 
 <template>
   <div id = "calc">
     <div id="calc_display">
-      <label>{{ inputA+' ' }} </label>
-      <label> {{ operator }} </label>
-      <label>{{ ' '+inputB }}</label>
+      <label>{{ displayText() }} </label>
     </div>
     <div id="calc_buttons">
       <button v-for="buttonString in buttonStrings" :key="buttonString" @click="buttonClicked(buttonString)">
