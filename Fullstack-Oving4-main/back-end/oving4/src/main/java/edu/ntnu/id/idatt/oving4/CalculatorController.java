@@ -1,42 +1,41 @@
 package edu.ntnu.id.idatt.oving4;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 @RestController
 public class CalculatorController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CalculatorController.class);
 
-    @Autowired
-    private CalculatorService calculatorService;
+  @Autowired
+  private CalculatorService calculatorService;
 
-    @GetMapping("/add")
-    public double add(@RequestParam double a, @RequestParam double b) {
-      LOGGER.info("Adding {} and {}", a, b);
-      return calculatorService.add(a, b);
-    }
+  @PostMapping("/add")
+  public double add(@RequestBody CalculationRequest request) {
+    LOGGER.info("Adding {} and {}", request.getInputA(), request.getInputB());
+    return calculatorService.add(request.getInputA(), request.getInputB());
+  }
 
-    @GetMapping("/subtract")
-    public double subtract(@RequestParam double a, @RequestParam double b) {
-      LOGGER.info("Subtracting {} from {}", b, a);
-      return calculatorService.subtract(a, b);
-    }
+  @PostMapping("/subtract")
+  public double subtract(@RequestBody CalculationRequest request) {
+    LOGGER.info("Subtracting {} from {}", request.getInputB(), request.getInputA());
+    return calculatorService.subtract(request.getInputA(), request.getInputB());
+  }
 
-    @GetMapping("/multiply")
-    public double multiply(@RequestParam double a, @RequestParam double b) {
-      LOGGER.info("Multiplying {} and {}", a, b);
-      return calculatorService.multiply(a, b);
-    }
+  @PostMapping("/multiply")
+  public double multiply(@RequestBody CalculationRequest request) {
+    LOGGER.info("Multiplying {} and {}", request.getInputA(), request.getInputB());
+    return calculatorService.multiply(request.getInputA(), request.getInputB());
+  }
 
-    @GetMapping("/divide")
-    public double divide(@RequestParam double a, @RequestParam double b) {
-      LOGGER.info("Dividing {} by {}", a, b);
-      return calculatorService.divide(a, b);
-    }
+  @PostMapping("/divide")
+  public double divide(@RequestBody CalculationRequest request) {
+    LOGGER.info("Dividing {} by {}", request.getInputA(), request.getInputB());
+    return calculatorService.divide(request.getInputA(), request.getInputB());
+  }
 }
