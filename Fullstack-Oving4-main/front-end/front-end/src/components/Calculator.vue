@@ -5,10 +5,9 @@ const buttonStrings = ['7', '8', '9', '+', '4', '5', '6', '-', '1', '2', '3', '*
 const inputA = ref('')
 const inputB = ref('')  
 const operator = ref('')
-
 const output = ref('')
 const state = ref('')
-const display = ref('')
+const debug = ref(true)
 
 const buttonClicked = (buttonString: string) => {
 
@@ -16,12 +15,23 @@ const buttonClicked = (buttonString: string) => {
   if (!isNaN(Number(buttonString))) {
     switch (state.value) {
       case 'inputA':
-        inputA.value += buttonString; break;
+        if (inputA.value === '0') {
+          inputA.value = buttonString;
+        } else {
+          inputA.value += buttonString;
+        }
+        break;
       case 'inputB':
-        inputB.value += buttonString; break;
+        if (inputB.value === '0') {
+          inputB.value = buttonString;
+        } else {
+          inputB.value += buttonString;
+        }
+        break;
       default:
-        inputA.value += buttonString;
+        inputA.value = buttonString;
         state.value = 'inputA';
+        break;
     }
   }
 
@@ -37,6 +47,29 @@ const buttonClicked = (buttonString: string) => {
     inputB.value = ''
     operator.value = ''
     state.value = 'inputA'
+  }
+
+  // if equals is pressed
+  else if (buttonString === '=' && inputA.value !== '' && inputB.value !== '' && operator.value !== '') {
+
+    // connect springboot backend
+    fetch('http://localhost:8080/calculate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inputA: inputA.value,
+        inputB: inputB.value,
+        operator: operator.value
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      output.value = data.result
+    })
+
+    state.value = 'answer'
   }
 }
 
